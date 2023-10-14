@@ -1,0 +1,29 @@
+{
+  "name": "cypress-split-timings-example",
+  "version": "1.0.0",
+  "description": "Run specs in parallel with cypress-split using spec timings",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "cypress run",
+    "badges": "npx -p dependency-version-badge update-badge cypress cypress-split",
+    "lint": "tsc --noEmit cypress.config.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahmutov/cypress-split-timings-example.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bahmutov/cypress-split-timings-example/issues"
+  },
+  "homepage": "https://github.com/bahmutov/cypress-split-timings-example#readme",
+  "devDependencies": {
+    "cypress": "^13.3.0",
+    "cypress-split": "1.9.2",
+    "prettier": "^3.0.0",
+    "typescript": "^5.2.2"
+  }
+}
