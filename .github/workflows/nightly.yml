@@ -1,0 +1,35 @@
+name: nightly
+on:
+  # run this workflow every night at 3am
+  schedule:
+    - cron: '0 3 * * *'
+  # or when the user triggers it from GitHub Actions page
+  workflow_dispatch:
+jobs:
+  all-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Run all Cypress tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v6
+        with:
+          # we don't need Cypress own runner summary
+          publish-summary: false
+        env:
+          # pretend we want to split all specs
+          # just so we can write all spec timings into the file
+          SPLIT: 1
+          SPLIT_INDEX: 0
+          SPLIT_FILE: 'timings.json'
+
+      - name: Commit changed spec timings ⏱️
+        if: github.ref == 'refs/heads/main'
+        # https://github.com/stefanzweifel/git-auto-commit-action
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updated spec timings
+          branch: main
+          file_pattern: timings.json
