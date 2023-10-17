@@ -1,1 +1,24 @@
-{"durations":[{"spec":"cypress/e2e/spec-a.cy.js","duration":10065},{"spec":"cypress/e2e/spec-b.cy.js","duration":10054},{"spec":"cypress/e2e/spec-c.cy.js","duration":10061},{"spec":"cypress/e2e/spec-d.cy.js","duration":60124},{"spec":"cypress/e2e/spec-e.cy.js","duration":10053}]}
+{
+  "durations": [
+    {
+      "spec": "cypress/e2e/spec-a.cy.js",
+      "duration": 10065
+    },
+    {
+      "spec": "cypress/e2e/spec-b.cy.js",
+      "duration": 10054
+    },
+    {
+      "spec": "cypress/e2e/spec-c.cy.js",
+      "duration": 10061
+    },
+    {
+      "spec": "cypress/e2e/spec-d.cy.js",
+      "duration": 60124
+    },
+    {
+      "spec": "cypress/e2e/spec-e.cy.js",
+      "duration": 10053
+    }
+  ]
+}
