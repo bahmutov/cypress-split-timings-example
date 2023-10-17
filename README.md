@@ -1,4 +1,4 @@
-# cypress-split-timings-example ![cypress version](https://img.shields.io/badge/cypress-13.3.0-brightgreen) ![cypress-split version](https://img.shields.io/badge/cypress--split-1.10.0-brightgreen)
+# cypress-split-timings-example ![cypress version](https://img.shields.io/badge/cypress-13.3.0-brightgreen) ![cypress-split version](https://img.shields.io/badge/cypress--split-1.13.0-brightgreen)
 
 > Run specs in parallel with cypress-split using spec timings
 
