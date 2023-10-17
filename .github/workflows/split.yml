@@ -25,7 +25,7 @@ jobs:
         run: |
           echo off
           echo split workflow outputs
-          echo '${{ fromJson(needs.split) }}'
+          echo '${{ fromJson(needs.split.outputs) }}'
 
       - name: Write updated timings 💾
         run: echo '${{ needs.split.outputs.merged-timings }}' > timings.json
