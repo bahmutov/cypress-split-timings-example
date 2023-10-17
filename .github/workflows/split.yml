@@ -21,11 +21,11 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v4
 
-      - name: Show outputs
+      - name: Show merged timings 🖨️
         run: |
           echo off
           echo split workflow outputs
-          echo '${{ fromJson(needs.split.outputs) }}'
+          echo '${{ needs.split.outputs.merged-timings }}'
 
       - name: Write updated timings 💾
         run: echo '${{ needs.split.outputs.merged-timings }}' > timings.json
