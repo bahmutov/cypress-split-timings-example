@@ -8,11 +8,12 @@ jobs:
     uses: bahmutov/cypress-workflows/.github/workflows/split.yml@v2
     with:
       nE2E: 2
+      # use timings to split E2E specs across 2 machines efficiently
       split-file: 'timings.json'
-      # show everything during the workflow run
-      debug-inputs: true
-      debug: cypress-split
 
+  # this job grab the output for the `split` workflow
+  # and writes it into a JSON file "timings.json"
+  # and then commits the updated file to the repository
   commit-updated-timings:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
@@ -24,7 +25,6 @@ jobs:
       - name: Show merged timings 🖨️
         run: |
           echo off
-          echo split workflow outputs
           echo '${{ needs.split.outputs.merged-timings }}'
 
       - name: Write updated timings 💾
