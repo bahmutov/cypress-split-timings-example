@@ -21,8 +21,14 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v4
 
+      - name: Show outputs
+        run: |
+          echo off
+          echo split workflow outputs
+          echo '${{ fromJson(needs.split) }}'
+
       - name: Write updated timings 💾
-        run: echo '${{ needs.split.outputs.timings }}' >> timings.json
+        run: echo '${{ needs.split.outputs.merged-timings }}' >> timings.json
 
       - name: Commit changed spec timings ⏱️
         # https://github.com/stefanzweifel/git-auto-commit-action
