@@ -9,6 +9,9 @@ jobs:
     with:
       nE2E: 2
       split-file: 'timings.json'
+      # show everything during the workflow run
+      debug-inputs: true
+      debug: cypress-split
 
   commit-updated-timings:
     if: github.ref == 'refs/heads/main'
