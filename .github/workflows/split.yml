@@ -28,7 +28,7 @@ jobs:
           echo '${{ fromJson(needs.split) }}'
 
       - name: Write updated timings 💾
-        run: echo '${{ needs.split.outputs.merged-timings }}' >> timings.json
+        run: echo '${{ needs.split.outputs.merged-timings }}' > timings.json
 
       - name: Commit changed spec timings ⏱️
         # https://github.com/stefanzweifel/git-auto-commit-action
