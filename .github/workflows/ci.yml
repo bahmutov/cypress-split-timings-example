@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with: 
           node-version: 16.10.0
+
       - name: Run split Cypress tests 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
@@ -24,6 +25,11 @@ jobs:
           # we don't need Cypress own runner summary
           publish-summary: false
         env:
+          # CYPRESS_RETRIES: 2
+          # CYPRESS_VIDEO: true
+          # PERCY_PARALLEL_NONCE: ${{ github.run_number }}
+          # PERCY_PARALLEL_TOTAL: ${{ inputs.job_total }}
+          # PERCY_TARGET_BRANCH: ${{ inputs.percy_target_branch }}
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
           SPLIT_FILE: 'timings.json'
