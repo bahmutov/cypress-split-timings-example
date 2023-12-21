@@ -1,8 +1,11 @@
 import { defineConfig } from 'cypress'
 import cypressSplit from 'cypress-split'
+import cypressOnFix from 'cypress-on-fix'
 
 const setupNodeEvents = (cypressOn, config) => {
-  cypressSplit(cypressOn, config)
+  const on = cypressOnFix(cypressOn)
+
+  cypressSplit(on, config)
   // IMPORTANT: return the config object
   return config
 }
