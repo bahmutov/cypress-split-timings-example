@@ -12,5 +12,6 @@ module.exports = defineConfig({
       // IMPORTANT: return the config object
       return config
     },
+    specPattern: 'cypress/**/*.cy.js',
   },
 })
