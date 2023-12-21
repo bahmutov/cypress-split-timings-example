@@ -15,7 +15,7 @@ jobs:
 
       - name: Run split Cypress tests 🧪
         # https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v5
         with:
           # we don't need Cypress own runner summary
           publish-summary: false
