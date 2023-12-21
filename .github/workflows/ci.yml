@@ -13,6 +13,10 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v4
 
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 16.10.0
       - name: Run split Cypress tests 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
