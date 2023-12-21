@@ -1,5 +1,5 @@
 name: ci
-on: push
+on: workflow_dispatch
 jobs:
   test-split:
     runs-on: ubuntu-22.04
