@@ -31,7 +31,7 @@ module.exports = defineConfig({
     //   reportTitle: 'Merchant Portal - Cypress tests result',
     //   toConsole: true,
     // },
-    specPattern: 'cypress/**/*.cy.js',
+    // specPattern: 'cypress/**/*.cy.js',
     setupNodeEvents,
     // supportFile: 'cypress/support/e2e.ts',
     supportFile: false,
