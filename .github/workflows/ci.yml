@@ -34,3 +34,52 @@ jobs:
           SPLIT_INDEX: ${{ strategy.job-index }}
           SPLIT_FILE: 'timings.json'
           DEBUG: cypress-split
+  merge-split-timings:
+    # only merge timings if E2E specs were successful
+    # if: ${{ inputs.split-file }}
+    needs: [test-split]
+    outputs:
+      timings: ${{ steps.merge.outputs.merged-timings }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Install dependencies 🧪
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+      # https://github.com/actions/download-artifact
+      - uses: actions/download-artifact@v3
+        # download all test results artifacts from the previous jobs
+        # it would be nice to download only the split jobs test artifacts
+        # but cannot specify the pattern of the test artifacts yet
+        # https://github.com/actions/download-artifact/issues/103
+        with:
+          path: split-results
+      - name: Display structure of downloaded files
+        run: ls -R split-results
+
+      # to merge timings you need v1.13+ of cypress-split
+      - name: Merge split timings
+        id: merge
+        run: |
+          npx cypress-split-merge \
+            --parent-folder split-results \
+            --split-file ${{ inputs.split-file }} \
+            --output ${{ inputs.split-file }} \
+            --set-gha-output merged-timings
+        env:
+          # pass the DEBUG environment variable
+          DEBUG: ${{ inputs.debug }}
+
+      - name: Print timings 🖨️
+        run: |
+          echo off
+          echo Merged timings
+          echo '${{ steps.merge.outputs.merged-timings }}'
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: merged-split-file
+          path: '${{ inputs.split-file }}'
+    
