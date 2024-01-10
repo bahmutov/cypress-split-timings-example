@@ -1,6 +1,17 @@
 name: ci
 on: 
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      split-file:
+        description: 'timings file'
+        type: string
+        required: false
+        default: timings.json
+    outputs:
+      merged-timings:
+        description: "Combined timings JSON from split files"
+        value: ${{ jobs.merge-split-timings.outputs.timings }}
+    
 jobs:
   test-split:
     runs-on: ubuntu-22.04
@@ -36,7 +47,7 @@ jobs:
           DEBUG: cypress-split
   merge-split-timings:
     # only merge timings if E2E specs were successful
-    # if: ${{ inputs.split-file }}
+    if: ${{ inputs.split-file }}
     needs: [test-split]
     outputs:
       timings: ${{ steps.merge.outputs.merged-timings }}
@@ -68,9 +79,9 @@ jobs:
             --split-file ${{ inputs.split-file }} \
             --output ${{ inputs.split-file }} \
             --set-gha-output merged-timings
-        env:
-          # pass the DEBUG environment variable
-          DEBUG: ${{ inputs.debug }}
+        # env:
+        #   # pass the DEBUG environment variable
+        #   DEBUG: ${{ inputs.debug }}
 
       - name: Print timings 🖨️
         run: |

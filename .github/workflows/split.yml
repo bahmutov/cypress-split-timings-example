@@ -2,6 +2,13 @@ name: split
 on:
   # launch this workflow from GitHub Actions page
   workflow_dispatch:
+    inputs:
+      nE2E:
+        description: 'Number of parallel containers for running E2E specs'
+        type: string
+        required: false
+        default: timings.json
+
 jobs:
   split:
     # https://github.com/bahmutov/cypress-workflows
