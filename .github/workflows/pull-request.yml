@@ -1,0 +1,134 @@
+name: Develop Pull Request
+run-name: Develop Pull Request by @${{ github.actor }}
+
+on: 
+  workflow_dispatch:
+    inputs:
+      split-file:
+        description: 'timings file'
+        required: false
+        default: 'timings.json'
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  test-split:
+    runs-on: ubuntu-22.04
+    # use two containers to run the tests
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 16.10.0
+
+      - name: Run split Cypress tests 🧪
+        # https://github.com/cypress-io/github-action
+        uses: cypress-io/github-action@v5
+        with:
+          # we don't need Cypress own runner summary
+          publish-summary: false
+        env:
+          # CYPRESS_RETRIES: 2
+          # CYPRESS_VIDEO: true
+          # PERCY_PARALLEL_NONCE: ${{ github.run_number }}
+          # PERCY_PARALLEL_TOTAL: ${{ inputs.job_total }}
+          # PERCY_TARGET_BRANCH: ${{ inputs.percy_target_branch }}
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+          SPLIT_FILE: 'timings.json'
+          DEBUG: cypress-split
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: cypress-split-results-e2e-${{ strategy.job-index }}
+          path: |
+            cypress/screenshots
+            cypress/videos
+            cypress/results
+            coverage
+            ${{ inputs.split-file }}
+          if-no-files-found: ignore
+  
+  merge-split-timings:
+    # only merge timings if E2E specs were successful
+    if: ${{ inputs.split-file }}
+    needs: [test-split]
+    outputs:
+      timings: ${{ steps.merge.outputs.merged-timings }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+      - name: Install dependencies 🧪
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+      # https://github.com/actions/download-artifact
+      - uses: actions/download-artifact@v3
+        # download all test results artifacts from the previous jobs
+        # it would be nice to download only the split jobs test artifacts
+        # but cannot specify the pattern of the test artifacts yet
+        # https://github.com/actions/download-artifact/issues/103
+        with:
+          path: split-results
+      - name: Display structure of downloaded files
+        run: ls -R split-results
+
+      # to merge timings you need v1.13+ of cypress-split
+      - name: Merge split timings
+        id: merge
+        run: |
+          npx cypress-split-merge \
+            --parent-folder split-results \
+            --split-file ${{ inputs.split-file }} \
+            --output ${{ inputs.split-file }} \
+            --set-gha-output merged-timings
+        # env:
+        #   # pass the DEBUG environment variable
+        #   DEBUG: ${{ inputs.debug }}
+
+      - name: Print timings 🖨️
+        run: |
+          echo off
+          echo Merged timings
+          echo '${{ steps.merge.outputs.merged-timings }}'
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: merged-split-file
+          path: '${{ inputs.split-file }}'
+
+  commit-updated-timings:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    needs: [test-split, merge-split-timings]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Show merged timings 🖨️
+        run: |
+          echo off
+          echo '${{ needs.split.outputs.merged-timings }}'
+
+      - name: Write updated timings 💾
+        # pretty-print json string into a file
+        run: echo '${{ toJson(fromJson(needs.split.outputs.merged-timings)) }}' > timings.json
+
+      - name: Commit changed spec timings ⏱️
+        # https://github.com/stefanzweifel/git-auto-commit-action
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updated spec timings
+          branch: main
+          file_pattern: timings.json
+  
