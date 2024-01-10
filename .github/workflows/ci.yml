@@ -1,16 +1,12 @@
 name: ci
 on: 
-  workflow_call:
+  workflow_dispatch:
     inputs:
       split-file:
         description: 'timings file'
         type: string
         required: false
         default: timings.json
-    outputs:
-      merged-timings:
-        description: "Combined timings JSON from split files"
-        value: ${{ jobs.merge-split-timings.outputs.timings }}
     
 jobs:
   test-split:
