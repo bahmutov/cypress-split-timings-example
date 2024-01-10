@@ -3,5 +3,5 @@
 /// <reference types="cypress" />
 
 it('runs test D1 (long spec)', () => {
-  cy.wait(60_000)
+  cy.wait(10_000)
 })
